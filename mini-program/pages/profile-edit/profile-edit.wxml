@@ -1,0 +1,86 @@
+<view class="container">
+  <view class="card">
+    <view class="section-title">{{isEdit ? '编辑关系' : '新建关系'}}</view>
+
+    <view style="margin-bottom:24rpx;">
+      <text style="color:#888; font-size:24rpx; display:block; margin-bottom:12rpx;">昵称</text>
+      <input class="input" placeholder="例如：二姨、老板、客户张总" value="{{form.nickname}}" bindinput="onInput" data-field="nickname" />
+    </view>
+
+    <view style="margin-bottom:24rpx;">
+      <text style="color:#888; font-size:24rpx; display:block; margin-bottom:12rpx;">头像 Emoji</text>
+      <view style="display:flex; flex-wrap:wrap;">
+        <view wx:for="{{emojis}}" wx:key="*this" 
+              class="emoji-tag {{form.emoji === item ? 'active' : ''}}"
+              bindtap="selectEmoji" data-emoji="{{item}}">
+          {{item}}
+        </view>
+      </view>
+    </view>
+
+    <view style="margin-bottom:24rpx;">
+      <text style="color:#888; font-size:24rpx; display:block; margin-bottom:12rpx;">关系大类</text>
+      <view style="display:flex; flex-wrap:wrap;">
+        <view wx:for="{{categories}}" wx:key="value" 
+              class="tag {{form.category === item.value ? 'active' : ''}}"
+              bindtap="selectCategory" data-value="{{item.value}}">
+          {{item.emoji}} {{item.label}}
+        </view>
+      </view>
+    </view>
+
+    <view style="margin-bottom:24rpx;" wx:if="{{subCategories.length > 0}}">
+      <text style="color:#888; font-size:24rpx; display:block; margin-bottom:12rpx;">压力类型</text>
+      <view style="display:flex; flex-wrap:wrap;">
+        <view wx:for="{{subCategories}}" wx:key="*this" 
+              class="tag {{form.subCategory === item ? 'active' : ''}}"
+              bindtap="selectSubCategory" data-value="{{item}}">
+          {{item}}
+        </view>
+      </view>
+    </view>
+
+    <view style="margin-bottom:24rpx;">
+      <text style="color:#888; font-size:24rpx; display:block; margin-bottom:12rpx;">当前目标</text>
+      <view style="display:flex; flex-wrap:wrap;">
+        <view wx:for="{{goals}}" wx:key="*this" 
+              class="tag {{form.currentGoal === item ? 'active' : ''}}"
+              bindtap="selectGoal" data-value="{{item}}">
+          {{item}}
+        </view>
+      </view>
+    </view>
+
+    <view style="margin-bottom:24rpx;">
+      <text style="color:#888; font-size:24rpx; display:block; margin-bottom:12rpx;">当前电量</text>
+      <view style="display:flex; flex-wrap:wrap;">
+        <view wx:for="{{energyOptions}}" wx:key="*this" 
+              class="tag {{form.energyLevel === item ? 'active' : ''}}"
+              bindtap="selectEnergy" data-value="{{item}}">
+          {{item}}
+        </view>
+      </view>
+    </view>
+
+    <view style="margin-bottom:24rpx;">
+      <text style="color:#888; font-size:24rpx; display:block; margin-bottom:12rpx;">风险标签</text>
+      <view style="display:flex; flex-wrap:wrap;">
+        <view wx:for="{{riskTagOptions}}" wx:key="*this" 
+              class="tag {{form.riskTags.includes(item) ? 'active' : ''}}"
+              bindtap="toggleRiskTag" data-value="{{item}}">
+          {{item}}
+        </view>
+      </view>
+    </view>
+
+    <view style="margin-bottom:24rpx;">
+      <text style="color:#888; font-size:24rpx; display:block; margin-bottom:12rpx;">备注</text>
+      <textarea class="input" placeholder="其他需要记录的信息..." value="{{form.notes}}" bindinput="onInput" data-field="notes" style="height:120rpx;"></textarea>
+    </view>
+  </view>
+
+  <view style="display:flex; gap:16rpx; margin-top:20rpx;">
+    <button class="btn-primary" bindtap="saveProfile" style="flex:1;">保存</button>
+    <button class="btn-secondary" bindtap="deleteProfile" wx:if="{{isEdit}}" style="flex:1;">删除</button>
+  </view>
+</view>

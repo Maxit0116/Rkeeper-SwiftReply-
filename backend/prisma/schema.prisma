@@ -1,0 +1,82 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  openId    String?  @unique
+  deviceId  String?  @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  profiles      Profile[]
+  chatHistories ChatHistory[]
+}
+
+model Profile {
+  id              String   @id @default(uuid())
+  userId          String
+  nickname        String
+  emoji           String   @default("👤")
+  category        String   // family | relative | work | friend | love | group | other
+  subCategory     String?  // 催婚型 | 压榨型领导 | 消耗型朋友 等
+  status          String   @default("active")
+  currentGoal     String?  // 快速结束聊天 | 礼貌维持关系 | 委婉拒绝 | ...
+  energyLevel     String?  // 社交电量耗尽 | 今天不想说话 | 正常
+  riskTags        String?  // JSON array
+  commonTopics    String?  // JSON array
+  pressurePoints  String?  // JSON array
+  voicePreference String?  // 喜欢发语音 | 文字为主
+  likeToAsk       Boolean?
+  emotionPattern  String?
+  notes           String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user          User          @relation(fields: [userId], references: [id])
+  chatHistories ChatHistory[]
+}
+
+model ChatHistory {
+  id            String   @id @default(uuid())
+  userId        String
+  profileId     String?
+  content       String
+  screenshots   String?  // JSON array of URLs
+  summary       String?
+  newRisks      String?  // JSON array
+  newTopics     String?  // JSON array
+  emotionChange String?
+  syncedAt      DateTime @default(now())
+  createdAt     DateTime @default(now())
+
+  user    User     @relation(fields: [userId], references: [id])
+  profile Profile? @relation(fields: [profileId], references: [id])
+}
+
+model ReplySuggestion {
+  id          String   @id @default(uuid())
+  userId      String
+  profileId   String?
+  inputText   String
+  strategy    String
+  replies     String   // JSON array
+  chosenIndex Int?
+  createdAt   DateTime @default(now())
+}
+
+model OCRResult {
+  id              String   @id @default(uuid())
+  userId          String
+  imageUrl        String
+  rawText         String
+  analyzedContent String?
+  profileGuess    String?
+  confidence      Float?
+  createdAt       DateTime @default(now())
+}

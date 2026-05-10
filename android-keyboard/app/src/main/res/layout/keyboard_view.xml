@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#1a1a2e">
+
+    <!-- Status Bar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/status_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="SoftReply 没电键盘"
+            android:textColor="#e94560"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btn_regenerate"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="🔄"
+            android:textSize="16sp"
+            android:background="@drawable/bg_candidate"
+            android:paddingHorizontal="12dp" />
+    </LinearLayout>
+
+    <!-- AI Suggestions -->
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="8dp"
+        android:paddingBottom="8dp">
+
+        <LinearLayout
+            android:id="@+id/candidate_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" />
+    </HorizontalScrollView>
+
+    <!-- Quick Actions -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:background="#0f0f1a">
+
+        <Button
+            android:id="@+id/btn_copy"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="复制"
+            android:textSize="12sp"
+            android:textColor="#ccc"
+            android:background="@drawable/bg_candidate"
+            android:layout_marginEnd="4dp" />
+
+        <Button
+            android:id="@+id/btn_analyze"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="截图分析"
+            android:textSize="12sp"
+            android:textColor="#ccc"
+            android:background="@drawable/bg_candidate"
+            android:layout_marginHorizontal="4dp" />
+
+        <Button
+            android:id="@+id/btn_settings"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="设置"
+            android:textSize="12sp"
+            android:textColor="#ccc"
+            android:background="@drawable/bg_candidate"
+            android:layout_marginStart="4dp" />
+    </LinearLayout>
+
+    <!-- Basic QWERTY Row (Simplified) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="4dp">
+
+        <Button
+            android:id="@+id/key_q"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:text="Q"
+            android:textSize="16sp"
+            android:textColor="#eee"
+            android:background="#2d2d44"
+            android:layout_margin="2dp" />
+
+        <Button
+            android:id="@+id/key_w"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:text="W"
+            android:textSize="16sp"
+            android:textColor="#eee"
+            android:background="#2d2d44"
+            android:layout_margin="2dp" />
+
+        <Button
+            android:id="@+id/key_e"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:text="E"
+            android:textSize="16sp"
+            android:textColor="#eee"
+            android:background="#2d2d44"
+            android:layout_margin="2dp" />
+
+        <Button
+            android:id="@+id/key_r"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:text="R"
+            android:textSize="16sp"
+            android:textColor="#eee"
+            android:background="#2d2d44"
+            android:layout_margin="2dp" />
+
+        <Button
+            android:id="@+id/key_t"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:text="T"
+            android:textSize="16sp"
+            android:textColor="#eee"
+            android:background="#2d2d44"
+            android:layout_margin="2dp" />
+
+        <Button
+            android:id="@+id/key_y"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:text="Y"
+            android:textSize="16sp"
+            android:textColor="#eee"
+            android:background="#2d2d44"
+            android:layout_margin="2dp" />
+
+        <Button
+            android:id="@+id/key_u"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:text="U"
+            android:textSize="16sp"
+            android:textColor="#eee"
+            android:background="#2d2d44"
+            android:layout_margin="2dp" />
+
+        <Button
+            android:id="@+id/key_i"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:text="I"
+            android:textSize="16sp"
+            android:textColor="#eee"
+            android:background="#2d2d44"
+            android:layout_margin="2dp" />
+
+        <Button
+            android:id="@+id/key_o"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:text="O"
+            android:textSize="16sp"
+            android:textColor="#eee"
+            android:background="#2d2d44"
+            android:layout_margin="2dp" />
+
+        <Button
+            android:id="@+id/key_p"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:text="P"
+            android:textSize="16sp"
+            android:textColor="#eee"
+            android:background="#2d2d44"
+            android:layout_margin="2dp" />
+    </LinearLayout>
+</LinearLayout>

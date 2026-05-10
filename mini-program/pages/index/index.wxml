@@ -1,0 +1,72 @@
+<view class="container">
+  <view class="header">
+    <text class="title">不知道怎么回？
+先稳一手。</text>
+    <text class="slogan">AI 关系军师 · 截图就能分析</text>
+  </view>
+
+  <view class="card" style="text-align:center; padding: 60rpx 40rpx;">
+    <button class="btn-primary" bindtap="goToAnalyzer" style="width:100%; margin-bottom:20rpx;">
+      📸 截图分析聊天
+    </button>
+    <text style="color:#888; font-size:24rpx;">上传聊天截图，AI 帮你分析上下文并生成回复</text>
+  </view>
+
+  <view class="card">
+    <view class="section-title">⚡ 快速回复</view>
+    <textarea class="input" placeholder="粘贴对方消息或聊天上下文..." 
+              style="height:160rpx; margin-bottom:20rpx;"
+              bindinput="onInputContext" value="{{inputContext}}"></textarea>
+    <view style="display:flex; gap:16rpx;">
+      <button class="btn-primary" bindtap="quickGenerate" style="flex:1;">生成回复</button>
+      <button class="btn-secondary" bindtap="clearInput" style="flex:1;">清空</button>
+    </view>
+  </view>
+
+  <view class="card" wx:if="{{quickReplies.length > 0}}">
+    <view class="section-title">💬 建议回复（{{quickStrategy}}）</view>
+    <view wx:for="{{quickReplies}}" wx:key="index" class="reply-item" bindtap="copyReply" data-text="{{item}}">
+      <text>{{index + 1}}. {{item}}</text>
+    </view>
+    <button class="btn-secondary" bindtap="openInKeyboard" style="margin-top:20rpx; width:100%;">
+      发送到输入法
+    </button>
+  </view>
+
+  <view class="card">
+    <view class="section-title">🔋 当前状态</view>
+    <view style="display:flex; flex-wrap:wrap;">
+      <view wx:for="{{energyOptions}}" wx:key="*this" 
+            class="tag {{currentEnergy === item ? 'active' : ''}}"
+            bindtap="setEnergy" data-energy="{{item}}">
+        {{item}}
+      </view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">🎯 当前目标</view>
+    <view style="display:flex; flex-wrap:wrap;">
+      <view wx:for="{{goalOptions}}" wx:key="*this" 
+            class="tag {{currentGoal === item ? 'active' : ''}}"
+            bindtap="setGoal" data-goal="{{item}}">
+        {{item}}
+      </view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">👥 最近关系</view>
+    <view wx:for="{{recentProfiles}}" wx:key="id" class="profile-row" bindtap="selectProfile" data-id="{{item.id}}">
+      <text style="font-size:40rpx; margin-right:16rpx;">{{item.emoji}}</text>
+      <view style="flex:1;">
+        <text style="font-weight:600; color:#fff;">{{item.nickname}}</text>
+        <text style="color:#888; font-size:24rpx; display:block;">{{item.subCategory || item.category}}</text>
+      </view>
+      <text style="color:#e94560; font-size:24rpx;">{{item.currentGoal || '未设目标'}}</text>
+    </view>
+    <button class="btn-secondary" bindtap="goToProfiles" style="margin-top:20rpx; width:100%;">
+      管理全部关系
+    </button>
+  </view>
+</view>

@@ -1,0 +1,15 @@
+<view class="container">
+  <view class="card">
+    <view class="section-title">💬 建议回复</view>
+    <view wx:for="{{replies}}" wx:key="index" class="reply-item" bindtap="copyReply" data-text="{{item}}">
+      <text style="color:#fff; font-size:30rpx;">{{item}}</text>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">🔄 操作</view>
+    <button class="btn-primary" bindtap="copyAll" style="width:100%; margin-bottom:16rpx;">复制全部</button>
+    <button class="btn-secondary" bindtap="regenerate" style="width:100%; margin-bottom:16rpx;">重新生成</button>
+    <button class="btn-secondary" bindtap="shareToKeyboard" style="width:100%;">发送到输入法</button>
+  </view>
+</view>

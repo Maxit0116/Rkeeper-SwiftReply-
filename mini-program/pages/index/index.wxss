@@ -1,0 +1,30 @@
+.header {
+  text-align: center;
+  padding: 40rpx 0;
+}
+
+.title {
+  display: block;
+  font-size: 48rpx;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.4;
+}
+
+.slogan {
+  display: block;
+  color: #888;
+  font-size: 26rpx;
+  margin-top: 12rpx;
+}
+
+.profile-row {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #2d2d44;
+}
+
+.profile-row:last-child {
+  border-bottom: none;
+}

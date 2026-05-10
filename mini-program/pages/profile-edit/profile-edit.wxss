@@ -1,0 +1,15 @@
+.emoji-tag {
+  display: inline-block;
+  font-size: 40rpx;
+  padding: 12rpx 20rpx;
+  margin-right: 10rpx;
+  margin-bottom: 10rpx;
+  border-radius: 12rpx;
+  background: #2d2d44;
+  border: 2rpx solid transparent;
+}
+
+.emoji-tag.active {
+  border-color: #e94560;
+  background: #3d1a24;
+}

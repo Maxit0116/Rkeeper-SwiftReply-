@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">没电键盘 SoftReply</string>
+    <string name="keyboard_label">SoftReply</string>
+    <string name="hint_input">输入消息...</string>
+    <string name="ai_generating">AI生成中...</string>
+    <string name="copy_success">已复制</string>
+</resources>

@@ -1,0 +1,9 @@
+# Copy this file to local.properties and update the SDK path
+# macOS example:
+# sdk.dir=/Users/YOUR_USERNAME/Library/Android/sdk
+#
+# If you installed Android Studio, the SDK is usually at:
+# sdk.dir=/Users/YOUR_USERNAME/Library/Android/sdk
+#
+# Windows example:
+# sdk.dir=C:\\Users\\YOUR_USERNAME\\AppData\\Local\\Android\\Sdk

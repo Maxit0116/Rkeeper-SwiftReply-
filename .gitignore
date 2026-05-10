@@ -1,0 +1,28 @@
+# OS
+.DS_Store
+
+# IDE
+.idea/
+
+# Secrets & local env
+.env
+.env.*
+!.env.example
+
+# Local DB (regenerate with prisma migrate)
+*.db
+*.db-journal
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# Android / Gradle
+**/.gradle/
+**/build/
+**/local.properties
+*.iml
+.cxx/
+.externalNativeBuild/
+captures/

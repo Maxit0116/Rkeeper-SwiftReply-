@@ -1,0 +1,52 @@
+<view class="container">
+  <view class="card" style="text-align:center; padding: 60rpx 40rpx;">
+    <text class="section-title">📸 上传聊天截图</text>
+    <text style="color:#888; font-size:24rpx; display:block; margin-bottom:30rpx;">
+      AI 会分析截图中的聊天内容、语气、关系压力点
+    </text>
+    <button class="btn-primary" bindtap="chooseImage" style="width:100%; margin-bottom:16rpx;">
+      选择截图
+    </button>
+    <button class="btn-secondary" bindtap="takePhoto" style="width:100%;">
+      拍照
+    </button>
+  </view>
+
+  <view class="card" wx:if="{{imageSrc}}">
+    <image src="{{imageSrc}}" mode="widthFix" style="width:100%; border-radius:12rpx; margin-bottom:20rpx;" />
+    <button class="btn-primary" bindtap="analyze" loading="{{analyzing}}" style="width:100%;">
+      {{analyzing ? '分析中...' : '开始分析'}}
+    </button>
+  </view>
+
+  <view class="card" wx:if="{{result.rawText}}">
+    <view class="section-title">📝 识别内容</view>
+    <text style="color:#ccc; font-size:26rpx;">{{result.rawText}}</text>
+  </view>
+
+  <view class="card" wx:if="{{result.analyzedContent}}">
+    <view class="section-title">🔍 氛围分析</view>
+    <text style="color:#ccc; font-size:26rpx;">{{result.analyzedContent}}</text>
+    <view wx:if="{{result.profileGuess}}" style="margin-top:16rpx;">
+      <text class="tag active">推测关系：{{result.profileGuess}} ({{result.confidence}}%)</text>
+    </view>
+  </view>
+
+  <view class="card" wx:if="{{result.suggestedReplies.length > 0}}">
+    <view class="section-title">💬 AI 建议回复</view>
+    <view wx:for="{{result.suggestedReplies}}" wx:key="index" class="reply-item" bindtap="copyReply" data-text="{{item}}">
+      <text>{{index + 1}}. {{item}}</text>
+    </view>
+    <view style="display:flex; gap:16rpx; margin-top:20rpx;">
+      <button class="btn-primary" bindtap="copyAll" style="flex:1;">复制全部</button>
+      <button class="btn-secondary" bindtap="goToResult" style="flex:1;">查看详情</button>
+    </view>
+  </view>
+
+  <view class="card" wx:if="{{result.rawText}}">
+    <view class="section-title">🔄 同步到关系记忆</view>
+    <button class="btn-secondary" bindtap="syncToProfile" style="width:100%;">
+      同步本次分析到 Relationship Profile
+    </button>
+  </view>
+</view>

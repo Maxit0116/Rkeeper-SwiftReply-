@@ -1,0 +1,15 @@
+<view class="container">
+  <view class="card" style="text-align:center; padding: 60rpx;">
+    <text style="font-size:80rpx; display:block; margin-bottom:20rpx;">🔋</text>
+    <text class="section-title">当前社交电量</text>
+    <text style="color:#888; font-size:26rpx; display:block; margin-bottom:40rpx;">
+      设置你的状态，AI 会据此调整回复策略
+    </text>
+    <view wx:for="{{energyOptions}}" wx:key="*this" 
+          class="tag {{currentEnergy === item ? 'active' : ''}}"
+          bindtap="selectEnergy" data-energy="{{item}}"
+          style="display:block; margin:16rpx auto; padding:24rpx; font-size:30rpx; width:80%; text-align:center;">
+      {{item}}
+    </view>
+  </view>
+</view>
