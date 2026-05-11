@@ -1,8 +1,6 @@
 package com.softreply.keyboard.service;
 
 import android.inputmethodservice.InputMethodService;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,9 +29,8 @@ public class SoftReplyInputMethodService extends InputMethodService {
     private Button regenerateBtn;
     private View keyboardView;
 
-    private String currentContext = "";
+    private boolean isUpperCase = false;
     private String userId;
-    private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
     @Override
     public void onCreate() {
@@ -55,37 +52,118 @@ public class SoftReplyInputMethodService extends InputMethodService {
         regenerateBtn = keyboardView.findViewById(R.id.btn_regenerate);
 
         regenerateBtn.setOnClickListener(v -> generateReplies());
-
-        // Quick action buttons
         keyboardView.findViewById(R.id.btn_copy).setOnClickListener(v -> copyToClipboard());
         keyboardView.findViewById(R.id.btn_settings).setOnClickListener(v -> openSettings());
         keyboardView.findViewById(R.id.btn_analyze).setOnClickListener(v -> openMiniProgram());
 
+        setupKeys();
         return keyboardView;
     }
 
-    @Override
-    public void onStartInput(EditorInfo attribute, boolean restarting) {
-        super.onStartInput(attribute, restarting);
-        // Auto-trigger mode: try to get current input text as context
+    private void setupKeys() {
+        // Letter keys
+        String[][] rows = {
+            {"q","w","e","r","t","y","u","i","o","p"},
+            {"a","s","d","f","g","h","j","k","l"},
+            {"z","x","c","v","b","n","m"}
+        };
+
+        for (String[] row : rows) {
+            for (String key : row) {
+                int id = getResources().getIdentifier("key_" + key, "id", getPackageName());
+                Button btn = keyboardView.findViewById(id);
+                if (btn != null) {
+                    btn.setOnClickListener(v -> onKeyClick(key));
+                }
+            }
+        }
+
+        // Special keys
+        Button shiftBtn = keyboardView.findViewById(R.id.key_shift);
+        Button delBtn = keyboardView.findViewById(R.id.key_del);
+        Button spaceBtn = keyboardView.findViewById(R.id.key_space);
+        Button enterBtn = keyboardView.findViewById(R.id.key_enter);
+        Button commaBtn = keyboardView.findViewById(R.id.key_comma);
+        Button periodBtn = keyboardView.findViewById(R.id.key_period);
+        Button symBtn = keyboardView.findViewById(R.id.key_sym);
+
+        if (shiftBtn != null) shiftBtn.setOnClickListener(v -> toggleShift());
+        if (delBtn != null) delBtn.setOnClickListener(v -> onDelete());
+        if (spaceBtn != null) spaceBtn.setOnClickListener(v -> onKeyClick(" "));
+        if (enterBtn != null) enterBtn.setOnClickListener(v -> onEnter());
+        if (commaBtn != null) commaBtn.setOnClickListener(v -> onKeyClick(","));
+        if (periodBtn != null) periodBtn.setOnClickListener(v -> onKeyClick("."));
+        if (symBtn != null) symBtn.setOnClickListener(v -> onKeyClick("?"));
+    }
+
+    private void onKeyClick(String text) {
+        String output = isUpperCase ? text.toUpperCase() : text;
         InputConnection ic = getCurrentInputConnection();
         if (ic != null) {
-            CharSequence text = ic.getTextBeforeCursor(200, 0);
-            if (text != null) {
-                currentContext = text.toString();
-                if (!currentContext.isEmpty()) {
-                    generateReplies();
+            ic.commitText(output, 1);
+        }
+    }
+
+    private void onDelete() {
+        InputConnection ic = getCurrentInputConnection();
+        if (ic != null) {
+            ic.deleteSurroundingText(1, 0);
+        }
+    }
+
+    private void onEnter() {
+        InputConnection ic = getCurrentInputConnection();
+        if (ic != null) {
+            ic.sendKeyEvent(new android.view.KeyEvent(android.view.KeyEvent.ACTION_DOWN, android.view.KeyEvent.KEYCODE_ENTER));
+            ic.sendKeyEvent(new android.view.KeyEvent(android.view.KeyEvent.ACTION_UP, android.view.KeyEvent.KEYCODE_ENTER));
+        }
+    }
+
+    private void toggleShift() {
+        isUpperCase = !isUpperCase;
+        updateKeyLabels();
+    }
+
+    private void updateKeyLabels() {
+        String[][] rows = {
+            {"q","w","e","r","t","y","u","i","o","p"},
+            {"a","s","d","f","g","h","j","k","l"},
+            {"z","x","c","v","b","n","m"}
+        };
+        for (String[] row : rows) {
+            for (String key : row) {
+                int id = getResources().getIdentifier("key_" + key, "id", getPackageName());
+                Button btn = keyboardView.findViewById(id);
+                if (btn != null) {
+                    btn.setText(isUpperCase ? key.toUpperCase() : key.toUpperCase());
                 }
             }
         }
     }
 
+    /**
+     * Read current text from input box and generate AI replies
+     */
     private void generateReplies() {
-        if (currentContext.isEmpty()) {
+        InputConnection ic = getCurrentInputConnection();
+        if (ic == null) {
+            statusText.setText("无法获取输入框");
+            return;
+        }
+
+        // Read text before and after cursor to get full context
+        CharSequence before = ic.getTextBeforeCursor(500, 0);
+        CharSequence after = ic.getTextAfterCursor(500, 0);
+        String currentContext = "";
+        if (before != null) currentContext += before.toString();
+        if (after != null) currentContext += after.toString();
+
+        if (currentContext.trim().isEmpty()) {
             statusText.setText("等待输入上下文...");
             return;
         }
-        statusText.setText(R.string.ai_generating);
+
+        statusText.setText("AI生成中...");
         candidateContainer.removeAllViews();
 
         GenerateReplyRequest req = new GenerateReplyRequest();
@@ -99,7 +177,7 @@ public class SoftReplyInputMethodService extends InputMethodService {
         BackendApi.generateReplies(API_BASE, userId, req, new BackendApi.Callback<GenerateReplyResponse>() {
             @Override
             public void onSuccess(GenerateReplyResponse result) {
-                mainHandler.post(() -> {
+                new android.os.Handler(android.os.Looper.getMainLooper()).post(() -> {
                     statusText.setText("策略: " + result.strategy);
                     if (result.matchedProfile != null) {
                         statusText.setText(result.matchedProfile.emoji + " " + result.matchedProfile.nickname
@@ -111,7 +189,7 @@ public class SoftReplyInputMethodService extends InputMethodService {
 
             @Override
             public void onError(String error) {
-                mainHandler.post(() -> {
+                new android.os.Handler(android.os.Looper.getMainLooper()).post(() -> {
                     statusText.setText("生成失败，点击重试");
                     Log.e(TAG, "API error: " + error);
                 });
@@ -128,8 +206,10 @@ public class SoftReplyInputMethodService extends InputMethodService {
             Button btn = new Button(this);
             btn.setText(text);
             btn.setTextSize(14);
+            btn.setTextColor(0xFFEEEEEE);
             btn.setBackgroundResource(R.drawable.bg_candidate);
             btn.setPadding(24, 16, 24, 16);
+            btn.setAllCaps(false);
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -171,17 +251,13 @@ public class SoftReplyInputMethodService extends InputMethodService {
     }
 
     private void openSettings() {
-        // Open settings activity
         android.content.Intent intent = new android.content.Intent(this, com.softreply.keyboard.SettingsActivity.class);
         intent.setFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
 
     private void openMiniProgram() {
-        // Copy best reply or current context to clipboard
         copyToClipboard();
-        
-        // Try to launch WeChat
         try {
             android.content.Intent intent = new android.content.Intent(android.content.Intent.ACTION_MAIN);
             android.content.ComponentName cmp = new android.content.ComponentName(
@@ -193,11 +269,5 @@ public class SoftReplyInputMethodService extends InputMethodService {
         } catch (Exception e) {
             Toast.makeText(this, "已复制到剪贴板，请手动打开微信", Toast.LENGTH_LONG).show();
         }
-    }
-
-    @Override
-    public void onWindowHidden() {
-        super.onWindowHidden();
-        currentContext = "";
     }
 }

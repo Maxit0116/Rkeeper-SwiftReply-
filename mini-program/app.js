@@ -18,7 +18,13 @@ App({
         if (res.data && res.data.userId) {
           this.globalData.userId = res.data.userId;
           wx.setStorageSync('userId', res.data.userId);
+          console.log('[App] registered userId:', res.data.userId);
+        } else {
+          console.error('[App] register failed, no userId in response', res);
         }
+      },
+      fail: (err) => {
+        console.error('[App] register request failed', err);
       },
     });
   },

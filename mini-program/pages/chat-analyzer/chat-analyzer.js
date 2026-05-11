@@ -60,6 +60,30 @@ Page({
       wx.showToast({ title: '请先选择图片', icon: 'none' });
       return;
     }
+
+    // Check userId
+    const userId = wx.getStorageSync('userId');
+    if (!userId) {
+      wx.showModal({
+        title: '未登录',
+        content: 'userId 为空，请返回首页重新进入小程序',
+        showCancel: false,
+      });
+      return;
+    }
+
+    // Check image size (base64 ~ 4/3 of original, warn if > 2MB)
+    const approxSizeMB = (imageBase64.length * 0.75) / 1024 / 1024;
+    console.log('[Analyze] image base64 length:', imageBase64.length, '~', approxSizeMB.toFixed(2), 'MB');
+    if (approxSizeMB > 5) {
+      wx.showModal({
+        title: '图片过大',
+        content: '当前图片约 ' + approxSizeMB.toFixed(1) + 'MB，建议压缩后重试',
+        showCancel: false,
+      });
+      return;
+    }
+
     this.setData({ analyzing: true });
     try {
       const res = await api.analyzeScreenshot({ imageBase64 });
@@ -73,7 +97,14 @@ Page({
         },
       });
     } catch (e) {
-      wx.showToast({ title: '分析失败', icon: 'none' });
+      console.error('[Analyze Error]', e);
+      const msg = e && e.errMsg ? e.errMsg : (e && e.message ? e.message : '分析失败');
+      wx.showToast({ title: msg.length > 20 ? '分析失败' : msg, icon: 'none' });
+      wx.showModal({
+        title: '分析失败',
+        content: JSON.stringify(e).slice(0, 300),
+        showCancel: false,
+      });
     } finally {
       this.setData({ analyzing: false });
     }

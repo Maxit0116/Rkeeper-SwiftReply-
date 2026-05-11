@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/keyboard_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -27,8 +28,9 @@
             android:id="@+id/btn_regenerate"
             android:layout_width="wrap_content"
             android:layout_height="36dp"
-            android:text="🔄"
-            android:textSize="16sp"
+            android:text="🔄 生成"
+            android:textSize="13sp"
+            android:textColor="#fff"
             android:background="@drawable/bg_candidate"
             android:paddingHorizontal="12dp" />
     </LinearLayout>
@@ -52,13 +54,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="8dp"
+        android:padding="6dp"
         android:background="#0f0f1a">
 
         <Button
             android:id="@+id/btn_copy"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="38dp"
             android:layout_weight="1"
             android:text="复制"
             android:textSize="12sp"
@@ -69,7 +71,7 @@
         <Button
             android:id="@+id/btn_analyze"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="38dp"
             android:layout_weight="1"
             android:text="截图分析"
             android:textSize="12sp"
@@ -80,7 +82,7 @@
         <Button
             android:id="@+id/btn_settings"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="38dp"
             android:layout_weight="1"
             android:text="设置"
             android:textSize="12sp"
@@ -89,121 +91,77 @@
             android:layout_marginStart="4dp" />
     </LinearLayout>
 
-    <!-- Basic QWERTY Row (Simplified) -->
+    <!-- Keyboard Row 1: QWERTYUIOP -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="4dp">
+        android:paddingHorizontal="2dp"
+        android:paddingTop="4dp">
 
-        <Button
-            android:id="@+id/key_q"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:text="Q"
-            android:textSize="16sp"
-            android:textColor="#eee"
-            android:background="#2d2d44"
-            android:layout_margin="2dp" />
+        <Button android:id="@+id/key_q" style="@style/KeyStyle" android:text="Q" />
+        <Button android:id="@+id/key_w" style="@style/KeyStyle" android:text="W" />
+        <Button android:id="@+id/key_e" style="@style/KeyStyle" android:text="E" />
+        <Button android:id="@+id/key_r" style="@style/KeyStyle" android:text="R" />
+        <Button android:id="@+id/key_t" style="@style/KeyStyle" android:text="T" />
+        <Button android:id="@+id/key_y" style="@style/KeyStyle" android:text="Y" />
+        <Button android:id="@+id/key_u" style="@style/KeyStyle" android:text="U" />
+        <Button android:id="@+id/key_i" style="@style/KeyStyle" android:text="I" />
+        <Button android:id="@+id/key_o" style="@style/KeyStyle" android:text="O" />
+        <Button android:id="@+id/key_p" style="@style/KeyStyle" android:text="P" />
+    </LinearLayout>
 
-        <Button
-            android:id="@+id/key_w"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:text="W"
-            android:textSize="16sp"
-            android:textColor="#eee"
-            android:background="#2d2d44"
-            android:layout_margin="2dp" />
+    <!-- Keyboard Row 2: ASDFGHJKL -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingHorizontal="2dp"
+        android:paddingTop="2dp">
 
-        <Button
-            android:id="@+id/key_e"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:text="E"
-            android:textSize="16sp"
-            android:textColor="#eee"
-            android:background="#2d2d44"
-            android:layout_margin="2dp" />
+        <Button android:id="@+id/key_a" style="@style/KeyStyle" android:text="A" />
+        <Button android:id="@+id/key_s" style="@style/KeyStyle" android:text="S" />
+        <Button android:id="@+id/key_d" style="@style/KeyStyle" android:text="D" />
+        <Button android:id="@+id/key_f" style="@style/KeyStyle" android:text="F" />
+        <Button android:id="@+id/key_g" style="@style/KeyStyle" android:text="G" />
+        <Button android:id="@+id/key_h" style="@style/KeyStyle" android:text="H" />
+        <Button android:id="@+id/key_j" style="@style/KeyStyle" android:text="J" />
+        <Button android:id="@+id/key_k" style="@style/KeyStyle" android:text="K" />
+        <Button android:id="@+id/key_l" style="@style/KeyStyle" android:text="L" />
+    </LinearLayout>
 
-        <Button
-            android:id="@+id/key_r"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:text="R"
-            android:textSize="16sp"
-            android:textColor="#eee"
-            android:background="#2d2d44"
-            android:layout_margin="2dp" />
+    <!-- Keyboard Row 3: ZXCVBNM + Delete -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingHorizontal="2dp"
+        android:paddingTop="2dp">
 
-        <Button
-            android:id="@+id/key_t"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:text="T"
-            android:textSize="16sp"
-            android:textColor="#eee"
-            android:background="#2d2d44"
-            android:layout_margin="2dp" />
+        <Button android:id="@+id/key_shift" style="@style/KeyStyleWide" android:text="⇧" />
+        <Button android:id="@+id/key_z" style="@style/KeyStyle" android:text="Z" />
+        <Button android:id="@+id/key_x" style="@style/KeyStyle" android:text="X" />
+        <Button android:id="@+id/key_c" style="@style/KeyStyle" android:text="C" />
+        <Button android:id="@+id/key_v" style="@style/KeyStyle" android:text="V" />
+        <Button android:id="@+id/key_b" style="@style/KeyStyle" android:text="B" />
+        <Button android:id="@+id/key_n" style="@style/KeyStyle" android:text="N" />
+        <Button android:id="@+id/key_m" style="@style/KeyStyle" android:text="M" />
+        <Button android:id="@+id/key_del" style="@style/KeyStyleWide" android:text="⌫" />
+    </LinearLayout>
 
-        <Button
-            android:id="@+id/key_y"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:text="Y"
-            android:textSize="16sp"
-            android:textColor="#eee"
-            android:background="#2d2d44"
-            android:layout_margin="2dp" />
+    <!-- Keyboard Row 4: Symbols / Space / Enter -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingHorizontal="2dp"
+        android:paddingTop="2dp"
+        android:paddingBottom="4dp">
 
-        <Button
-            android:id="@+id/key_u"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:text="U"
-            android:textSize="16sp"
-            android:textColor="#eee"
-            android:background="#2d2d44"
-            android:layout_margin="2dp" />
-
-        <Button
-            android:id="@+id/key_i"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:text="I"
-            android:textSize="16sp"
-            android:textColor="#eee"
-            android:background="#2d2d44"
-            android:layout_margin="2dp" />
-
-        <Button
-            android:id="@+id/key_o"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:text="O"
-            android:textSize="16sp"
-            android:textColor="#eee"
-            android:background="#2d2d44"
-            android:layout_margin="2dp" />
-
-        <Button
-            android:id="@+id/key_p"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:text="P"
-            android:textSize="16sp"
-            android:textColor="#eee"
-            android:background="#2d2d44"
-            android:layout_margin="2dp" />
+        <Button android:id="@+id/key_sym" style="@style/KeyStyleWide" android:text="符" />
+        <Button android:id="@+id/key_comma" style="@style/KeyStyle" android:text="," />
+        <Button android:id="@+id/key_space" style="@style/KeyStyleSpace" android:text="空格" />
+        <Button android:id="@+id/key_period" style="@style/KeyStyle" android:text="." />
+        <Button android:id="@+id/key_enter" style="@style/KeyStyleWide" android:text="⏎" />
     </LinearLayout>
 </LinearLayout>
