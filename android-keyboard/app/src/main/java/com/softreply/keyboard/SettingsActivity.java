@@ -1,11 +1,14 @@
 package com.softreply.keyboard;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +18,8 @@ public class SettingsActivity extends AppCompatActivity {
     private Spinner goalSpinner;
     private Spinner energySpinner;
     private Button saveBtn;
+    private Button a11yBtn;
+    private TextView a11yStatus;
 
     private static final String[] GOALS = {
         "快速结束聊天",
@@ -44,6 +49,8 @@ public class SettingsActivity extends AppCompatActivity {
         goalSpinner = findViewById(R.id.spinner_goal);
         energySpinner = findViewById(R.id.spinner_energy);
         saveBtn = findViewById(R.id.btn_save);
+        a11yBtn = findViewById(R.id.btn_a11y);
+        a11yStatus = findViewById(R.id.tv_a11y_status);
 
         ArrayAdapter<String> goalAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, GOALS);
         goalAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -70,5 +77,37 @@ public class SettingsActivity extends AppCompatActivity {
             Toast.makeText(this, "设置已保存", Toast.LENGTH_SHORT).show();
             finish();
         });
+
+        a11yBtn.setOnClickListener(v -> {
+            // Open system accessibility settings to enable our service
+            Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+            startActivity(intent);
+            Toast.makeText(this, "请在列表中找到\"没电键盘辅助服务\"并开启", Toast.LENGTH_LONG).show();
+        });
+
+        updateA11yStatus();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateA11yStatus();
+    }
+
+    private void updateA11yStatus() {
+        // Check if our accessibility service is enabled
+        String enabledServices = Settings.Secure.getString(getContentResolver(), Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
+        String ourService = getPackageName() + "/.service.WeChatAccessibilityService";
+        boolean isEnabled = enabledServices != null && enabledServices.contains(ourService);
+
+        if (isEnabled) {
+            a11yStatus.setText("状态：已开启 ✅\n会自动读取微信聊天上下文");
+            a11yStatus.setTextColor(0xFF4CAF50);
+            a11yBtn.setText("关闭辅助服务");
+        } else {
+            a11yStatus.setText("状态：未开启 ⚪\n开启后可自动读取微信聊天内容");
+            a11yStatus.setTextColor(0xFF888888);
+            a11yBtn.setText("开启辅助服务");
+        }
     }
 }

@@ -31,6 +31,7 @@ public class SoftReplyInputMethodService extends InputMethodService {
 
     private boolean isUpperCase = false;
     private String userId;
+    private String a11yContext = "";
 
     @Override
     public void onCreate() {
@@ -42,6 +43,14 @@ public class SoftReplyInputMethodService extends InputMethodService {
             getSharedPreferences("softreply", MODE_PRIVATE)
                     .edit().putString("user_id", userId).apply();
         }
+
+        // Register listener for accessibility service chat context
+        WeChatAccessibilityService.setListener(context -> {
+            a11yContext = context;
+            new android.os.Handler(android.os.Looper.getMainLooper()).post(() -> {
+                statusText.setText("已捕获 " + context.split("\\n").length + " 条消息，点击生成");
+            });
+        });
     }
 
     @Override
@@ -52,6 +61,7 @@ public class SoftReplyInputMethodService extends InputMethodService {
         regenerateBtn = keyboardView.findViewById(R.id.btn_regenerate);
 
         regenerateBtn.setOnClickListener(v -> generateReplies());
+        keyboardView.findViewById(R.id.btn_paste).setOnClickListener(v -> pasteFromClipboard());
         keyboardView.findViewById(R.id.btn_copy).setOnClickListener(v -> copyToClipboard());
         keyboardView.findViewById(R.id.btn_settings).setOnClickListener(v -> openSettings());
         keyboardView.findViewById(R.id.btn_analyze).setOnClickListener(v -> openMiniProgram());
@@ -154,12 +164,22 @@ public class SoftReplyInputMethodService extends InputMethodService {
         // Read text before and after cursor to get full context
         CharSequence before = ic.getTextBeforeCursor(500, 0);
         CharSequence after = ic.getTextAfterCursor(500, 0);
-        String currentContext = "";
-        if (before != null) currentContext += before.toString();
-        if (after != null) currentContext += after.toString();
+        String inputContext = "";
+        if (before != null) inputContext += before.toString();
+        if (after != null) inputContext += after.toString();
+
+        // Combine with accessibility service context if available
+        String currentContext = inputContext.trim();
+        if (!a11yContext.isEmpty()) {
+            if (!currentContext.isEmpty()) {
+                currentContext = a11yContext + "\n[我的输入]: " + currentContext;
+            } else {
+                currentContext = a11yContext;
+            }
+        }
 
         if (currentContext.trim().isEmpty()) {
-            statusText.setText("等待输入上下文...");
+            statusText.setText("等待输入上下文...\n方式A：粘贴对方消息 → 点击生成\n方式B：设置里开启辅助服务自动读取");
             return;
         }
 
@@ -247,6 +267,26 @@ public class SoftReplyInputMethodService extends InputMethodService {
             android.content.ClipboardManager cm = (android.content.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
             cm.setPrimaryClip(android.content.ClipData.newPlainText("reply", text));
             Toast.makeText(this, R.string.copy_success, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void pasteFromClipboard() {
+        android.content.ClipboardManager cm = (android.content.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+        if (cm.hasPrimaryClip() && cm.getPrimaryClip() != null && cm.getPrimaryClip().getItemCount() > 0) {
+            CharSequence text = cm.getPrimaryClip().getItemAt(0).getText();
+            if (!TextUtils.isEmpty(text)) {
+                InputConnection ic = getCurrentInputConnection();
+                if (ic != null) {
+                    ic.commitText(text.toString(), 1);
+                    Toast.makeText(this, "已粘贴", Toast.LENGTH_SHORT).show();
+                    // Auto-trigger generation after paste
+                    generateReplies();
+                }
+            } else {
+                Toast.makeText(this, "剪贴板为空", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(this, "剪贴板为空", Toast.LENGTH_SHORT).show();
         }
     }
 
